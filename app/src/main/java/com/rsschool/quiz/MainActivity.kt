@@ -12,12 +12,14 @@ class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     val questions = arrayOf(
-        arrayOf("Вопрос 1", "ответ 1", "ответ 2", "ответ 3", "ответ 4", "ответ 5"),
-        arrayOf("Вопрос 2", "ответ a", "ответ b", "ответ c", "ответ d", "ответ e"),
-        arrayOf("Вопрос 3", "ответ A", "ответ B", "ответ C", "ответ D", "ответ F"),
-        arrayOf("Вопрос 4", " 1", " 2", " 3", " 4", " 5"),
-        arrayOf("Вопрос 5", "100", "200", "300", "400", "500")
+        arrayOf("Вопрос 1", "ответ 1", "ответ 2", "ответ 3", "ответ 4", "ответ 5", "Theme.Quiz.First"),
+        arrayOf("Вопрос 2", "ответ a", "ответ b", "ответ c", "ответ d", "ответ e", "Theme.Quiz.Second"),
+        arrayOf("Вопрос 3", "ответ A", "ответ B", "ответ C", "ответ D", "ответ F", "Theme.Quiz.Third"),
+        arrayOf("Вопрос 4", " 1", " 2", " 3", " 4", " 5", "Theme.Quiz.Fourth"),
+        arrayOf("Вопрос 5", "100", "200", "300", "400", "500", "Theme.Quiz.Fifth")
     )
+
+    val answers: Array<String> = Array(questions.size, {""})
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,6 +43,7 @@ class MainActivity : AppCompatActivity() {
         RecyclerView.ViewHolder(binding.root)
 
     inner class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
+
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             MyViewHolder(FragmentQuizBinding.inflate(layoutInflater, parent, false))
 
@@ -55,8 +58,22 @@ class MainActivity : AppCompatActivity() {
             holder.binding.optionFour.text = questions[position][4]
             holder.binding.optionFive.text = questions[position][5]
 
-            if (position == 0) holder.binding.toolbar.navigationIcon = null
 
+            if (position == 0) {
+                holder.binding.toolbar.navigationIcon = null
+                holder.binding.previousButton.isEnabled = false
+            }
+
+            if (position == questions.size - 1) holder.binding.nextButton.text = "Submit"
+            
+            holder.binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
+                holder.binding.nextButton.isEnabled = true
+            }
+
+            holder.binding.nextButton.setOnClickListener {
+                answers[position] = holder.binding.radioGroup.checkedRadioButtonId.toString()
+
+            }
         }
     }
 }
