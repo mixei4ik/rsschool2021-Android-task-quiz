@@ -5,6 +5,7 @@ import android.icu.text.Transliterator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
@@ -12,6 +13,7 @@ import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.rsschool.quiz.databinding.ActivityMainBinding
 import com.rsschool.quiz.databinding.FragmentQuizBinding
+import com.rsschool.quiz.DataClass
 
 
 class MainActivity : AppCompatActivity() {
@@ -35,7 +37,6 @@ class MainActivity : AppCompatActivity() {
             setContentView(root)
             viewpager.adapter = MyAdapter(viewpager)
             viewpager.isUserInputEnabled = false
-
             viewpager.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
                 override fun onPageSelected(position: Int) {
@@ -76,11 +77,30 @@ class MainActivity : AppCompatActivity() {
 
             holder.binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
                 holder.binding.nextButton.isEnabled = true
+                when (checkedId) {
+                    holder.binding.optionOne.id -> {
+                        answers[position] = 1
+                    }
+                    holder.binding.optionTwo.id -> {
+                        answers[position] = 2
+                    }
+                    holder.binding.optionThree.id -> {
+                        answers[position] = 3
+                    }
+                    holder.binding.optionFour.id -> {
+                        answers[position] = 4
+                    }
+                    holder.binding.optionFive.id -> {
+                        answers[position] = 5
+                    }
+                }
             }
 
             holder.binding.nextButton.setOnClickListener {
-                answers[position] = holder.binding.radioGroup.checkedRadioButtonId
                 if (position == questions.size - 1) {
+                    val bundle = bundleOf("answers" to  answers.toIntArray())
+
+                    ResultFragment().arguments = bundle
                     onGoResultFragment()
                 } else viewPager.currentItem = position + 1
 
@@ -94,13 +114,17 @@ class MainActivity : AppCompatActivity() {
                 viewPager.currentItem = position - 1
             }
         }
+
     }
 
     private fun onGoResultFragment() {
+
+
+
         val fragment: Fragment = ResultFragment()
+//        val activity: AppCompatActivity = context as AppCompatActivity
         val transaction = supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, fragment).commit()
 
     }
-
 }
