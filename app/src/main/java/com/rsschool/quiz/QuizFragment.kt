@@ -1,18 +1,15 @@
 package com.rsschool.quiz
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.activity.OnBackPressedCallback
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.os.bundleOf
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager2.widget.ViewPager2
 import com.rsschool.quiz.databinding.FragmentQuiz2Binding
 import com.rsschool.quiz.databinding.FragmentQuizBinding
-import kotlin.system.exitProcess
 
 
 class QuizFragment : Fragment() {
@@ -21,14 +18,16 @@ class QuizFragment : Fragment() {
     private val binding get() = _binding!!
 
     val answersQuestion = arrayOf(
-        arrayOf("1", " 2", "4", "7", "9", "Theme.Quiz.First", "3"),
-        arrayOf("5", "12", "10", "6", "20", "Theme.Quiz.Second", "1"),
-        arrayOf("10", "12", "24", "15", "32", "Theme.Quiz.Third", "2"),
-        arrayOf("10", " 20", " 30", "60", " 100", "Theme.Quiz.Fourth", "3"),
-        arrayOf("60", "10", "30", "7", "100", "Theme.Quiz.Fifth", "0")
+        arrayOf("1", " 2", "4", "7", "9", "@style/Theme.Quiz.First", "3"),
+        arrayOf("5", "12", "10", "6", "20", "@style/Theme.Quiz.Second", "1"),
+        arrayOf("10", "12", "24", "15", "32", "@style/Theme.Quiz.Third", "2"),
+        arrayOf("10", " 20", " 30", "60", " 100", "@style/Theme.Quiz.Fourth", "3"),
+        arrayOf("60", "10", "30", "7", "100", "@style/Theme.Quiz.Fifth", "0")
     )
-    val questions = arrayOf("Сколько дней в неделе", "Сколько месецев в году",
-        "Сколько часов в сутках", "Сколько секунд в минуте", "Сколько минут в часе")
+    val questions = arrayOf(
+        "Сколько дней в неделе", "Сколько месецев в году",
+        "Сколько часов в сутках", "Сколько секунд в минуте", "Сколько минут в часе"
+    )
 
 
     var answers = mutableListOf(-1, -1, -1, -1, -1)
@@ -59,7 +58,8 @@ class QuizFragment : Fragment() {
     inner class MyViewHolder(val binding: FragmentQuizBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    inner class MyAdapter(private val viewPager: ViewPager2) : RecyclerView.Adapter<MyViewHolder>() {
+    inner class MyAdapter(private val viewPager: ViewPager2) :
+        RecyclerView.Adapter<MyViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             MyViewHolder(FragmentQuizBinding.inflate(layoutInflater, parent, false))
@@ -74,6 +74,7 @@ class QuizFragment : Fragment() {
             holder.binding.optionThree.text = answersQuestion[position][2]
             holder.binding.optionFour.text = answersQuestion[position][3]
             holder.binding.optionFive.text = answersQuestion[position][4]
+
 //            holder.binding.context?.setTheme(questions[position][5])
 //            holder.binding.context?.theme?.applyStyle(questions[position][5], true)
 
@@ -108,14 +109,10 @@ class QuizFragment : Fragment() {
 
             holder.binding.nextButton.setOnClickListener {
                 if (position == questions.size - 1) {
-//                    val bundle = bundleOf("answers" to  answers.toIntArray())
-
-//                    ResultFragment().arguments = bundle
-
-
                     onStartResultFragment()
-                } else viewPager.currentItem = position + 1
-
+                } else {
+                    viewPager.currentItem = position + 1
+                }
             }
 
             holder.binding.previousButton.setOnClickListener {
@@ -126,7 +123,6 @@ class QuizFragment : Fragment() {
                 viewPager.currentItem = position - 1
             }
         }
-
     }
 
     override fun onDestroyView() {
@@ -136,12 +132,11 @@ class QuizFragment : Fragment() {
 
     fun onStartResultFragment() {
 
-        val fragment: Fragment = ResultFragment.newInstance(answers = answers.toIntArray(), questions = questions)
+        val fragment: Fragment =
+            ResultFragment.newInstance(answers = answers.toIntArray(), questions = questions)
         val activity: AppCompatActivity = context as AppCompatActivity
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, fragment).commit()
 
     }
-
-
 }

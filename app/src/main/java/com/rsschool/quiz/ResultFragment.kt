@@ -2,12 +2,11 @@ package com.rsschool.quiz
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
-import androidx.core.app.ActivityCompat.recreate
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.rsschool.quiz.databinding.FragmentResultBinding
 
 class ResultFragment : Fragment(R.layout.fragment_result) {
@@ -40,16 +39,18 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val answers: IntArray = (arguments?.getIntArray(ANSWERS) ?: arrayOf(0,0,0,0,0)) as IntArray
-        val questions = arguments?.getStringArray(QUESTIONS) ?: arrayOf("","","","","")
-        val result = sumResult(answers)  * 100 / 5
+        val answers: IntArray =
+            (arguments?.getIntArray(ANSWERS) ?: arrayOf(0, 0, 0, 0, 0)) as IntArray
+        val questions = arguments?.getStringArray(QUESTIONS) ?: arrayOf("", "", "", "", "")
+        val result = sumResult(answers) * 100 / 5
 
         binding.result.text = "Ваш результат $result %"
         binding.exit.setOnClickListener { activity?.finish() }
-        binding.reset.setOnClickListener {  }
+        binding.reset.setOnClickListener { onStartQuizFragment() }
 
         binding.send.setOnClickListener {
-            val resultSend = """Вопрос 1. ${questions[0]}
+            val resultSend = """    Ваш результат $result %
+Вопрос 1. ${questions[0]}
     Ваш ответ: ${answersQuestion[0][answers[0]]}
 Вопрос 2. ${questions[1]}
     Ваш ответ: ${answersQuestion[1][answers[1]]}
@@ -65,8 +66,6 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
             intent.putExtra(Intent.EXTRA_TEXT, resultSend)
             startActivity(intent)
         }
-
-
     }
 
     private fun sumResult(answers: IntArray): Int {
@@ -95,5 +94,10 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
         private const val QUESTIONS = "questions"
     }
 
-
+    private fun onStartQuizFragment() {
+        val fragment: Fragment = QuizFragment()
+        val activity: AppCompatActivity = context as AppCompatActivity
+        val transaction = activity.supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment).commit()
+    }
 }
