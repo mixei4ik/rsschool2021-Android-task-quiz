@@ -20,13 +20,17 @@ class QuizFragment : Fragment() {
     private var _binding: FragmentQuiz2Binding? = null
     private val binding get() = _binding!!
 
-    val questions = arrayOf(
-        arrayOf("Сколько дней в неделе", "1", " 2", "4", "7", "9", "Theme.Quiz.First"),
-        arrayOf("Сколько месецев в году", "5", "12", "10", "6", "20", "Theme.Quiz.Second"),
-        arrayOf("Сколько часов в сутках", "10", "12", "24", "15", "32", "Theme.Quiz.Third"),
-        arrayOf("Сколько секунд в минуте", "10", " 20", " 30", "60", " 100", "Theme.Quiz.Fourth"),
-        arrayOf("Сколько минут в часе", "60", "10", "30", "7", "100", "Theme.Quiz.Fifth")
+    val answersQuestion = arrayOf(
+        arrayOf("1", " 2", "4", "7", "9", "Theme.Quiz.First", "3"),
+        arrayOf("5", "12", "10", "6", "20", "Theme.Quiz.Second", "1"),
+        arrayOf("10", "12", "24", "15", "32", "Theme.Quiz.Third", "2"),
+        arrayOf("10", " 20", " 30", "60", " 100", "Theme.Quiz.Fourth", "3"),
+        arrayOf("60", "10", "30", "7", "100", "Theme.Quiz.Fifth", "0")
     )
+    val questions = arrayOf("Сколько дней в неделе", "Сколько месецев в году",
+        "Сколько часов в сутках", "Сколько секунд в минуте", "Сколько минут в часе")
+
+
     var answers = mutableListOf(-1, -1, -1, -1, -1)
 
     override fun onCreateView(
@@ -34,14 +38,7 @@ class QuizFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         _binding = FragmentQuiz2Binding.inflate(inflater, container, false)
-        val callback = object : OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                val currentIndex = binding.viewpager.currentItem
-                if (currentIndex > 0) binding.viewpager.currentItem = currentIndex - 1
-                else exitProcess(0)
-            }
-        }
-        activity?.onBackPressedDispatcher?.addCallback(callback)
+
         return binding.root
     }
 
@@ -71,14 +68,14 @@ class QuizFragment : Fragment() {
 
         override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
             holder.binding.toolbar.title = "Вопрос ${position + 1}"
-            holder.binding.question.text = questions[position][0]
-            holder.binding.optionOne.text = questions[position][1]
-            holder.binding.optionTwo.text = questions[position][2]
-            holder.binding.optionThree.text = questions[position][3]
-            holder.binding.optionFour.text = questions[position][4]
-            holder.binding.optionFive.text = questions[position][5]
-//            holder.binding.context?.setTheme(questions[position][6])
-//            holder.binding.context?.theme?.applyStyle(questions[position][6], true)
+            holder.binding.question.text = questions[position]
+            holder.binding.optionOne.text = answersQuestion[position][0]
+            holder.binding.optionTwo.text = answersQuestion[position][1]
+            holder.binding.optionThree.text = answersQuestion[position][2]
+            holder.binding.optionFour.text = answersQuestion[position][3]
+            holder.binding.optionFive.text = answersQuestion[position][4]
+//            holder.binding.context?.setTheme(questions[position][5])
+//            holder.binding.context?.theme?.applyStyle(questions[position][5], true)
 
 
             if (position == 0) {
@@ -92,28 +89,28 @@ class QuizFragment : Fragment() {
                 holder.binding.nextButton.isEnabled = true
                 when (checkedId) {
                     holder.binding.optionOne.id -> {
-                        answers[position] = 1
+                        answers[position] = 0
                     }
                     holder.binding.optionTwo.id -> {
-                        answers[position] = 2
+                        answers[position] = 1
                     }
                     holder.binding.optionThree.id -> {
-                        answers[position] = 3
+                        answers[position] = 2
                     }
                     holder.binding.optionFour.id -> {
-                        answers[position] = 4
+                        answers[position] = 3
                     }
                     holder.binding.optionFive.id -> {
-                        answers[position] = 5
+                        answers[position] = 4
                     }
                 }
             }
 
             holder.binding.nextButton.setOnClickListener {
                 if (position == questions.size - 1) {
-                    val bundle = bundleOf("answers" to  answers.toIntArray())
+//                    val bundle = bundleOf("answers" to  answers.toIntArray())
 
-                    ResultFragment().arguments = bundle
+//                    ResultFragment().arguments = bundle
 
 
                     onStartResultFragment()
@@ -139,11 +136,12 @@ class QuizFragment : Fragment() {
 
     fun onStartResultFragment() {
 
-        val fragment: Fragment = ResultFragment()
+        val fragment: Fragment = ResultFragment.newInstance(answers = answers.toIntArray(), questions = questions)
         val activity: AppCompatActivity = context as AppCompatActivity
         val transaction = activity.supportFragmentManager.beginTransaction()
         transaction.replace(R.id.container, fragment).commit()
 
     }
+
 
 }
