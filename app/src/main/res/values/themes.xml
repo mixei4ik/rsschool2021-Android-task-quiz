@@ -26,6 +26,7 @@
     </style>
 
     <style name="Theme.Quiz.Third" parent="Theme.Quiz">
+
         <item name="colorPrimary">@color/light_green_100</item>
         <item name="colorPrimaryDark">@color/light_green_100_dark</item>
         <item name="colorPrimaryVariant">@color/light_green_100_dark</item>

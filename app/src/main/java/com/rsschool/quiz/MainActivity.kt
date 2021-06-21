@@ -1,25 +1,31 @@
 package com.rsschool.quiz
 
+import android.content.Intent
+import android.icu.text.Transliterator
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.widget.ViewPager2
 import com.rsschool.quiz.databinding.ActivityMainBinding
 import com.rsschool.quiz.databinding.FragmentQuizBinding
+
 
 class MainActivity : AppCompatActivity() {
 
     lateinit var binding: ActivityMainBinding
     val questions = arrayOf(
-        arrayOf("Вопрос 1", "ответ 1", "ответ 2", "ответ 3", "ответ 4", "ответ 5", "Theme.Quiz.First"),
-        arrayOf("Вопрос 2", "ответ a", "ответ b", "ответ c", "ответ d", "ответ e", "Theme.Quiz.Second"),
-        arrayOf("Вопрос 3", "ответ A", "ответ B", "ответ C", "ответ D", "ответ F", "Theme.Quiz.Third"),
-        arrayOf("Вопрос 4", " 1", " 2", " 3", " 4", " 5", "Theme.Quiz.Fourth"),
-        arrayOf("Вопрос 5", "100", "200", "300", "400", "500", "Theme.Quiz.Fifth")
+        arrayOf("Сколько дней в неделе", "1", " 2", "4", "7", "9", "Theme.Quiz.First"),
+        arrayOf("Сколько месецев в году", "5", "12", "10", "6", "20", "Theme.Quiz.Second"),
+        arrayOf("Сколько часов в сутках", "10", "12", "24", "15", "32", "Theme.Quiz.Third"),
+        arrayOf("Сколько секунд в минуте", "10", " 20", " 30", "60", " 100", "Theme.Quiz.Fourth"),
+        arrayOf("Сколько минут в часе", "60", "10", "30", "7", "100", "Theme.Quiz.Fifth")
     )
 
-    val answers: Array<String> = Array(questions.size, {""})
+    var answers = mutableListOf(-1, -1, -1, -1, -1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,8 +33,8 @@ class MainActivity : AppCompatActivity() {
 
         with(binding) {
             setContentView(root)
-            viewpager.adapter = MyAdapter()
-            viewpager.orientation = ViewPager2.ORIENTATION_HORIZONTAL
+            viewpager.adapter = MyAdapter(viewpager)
+            viewpager.isUserInputEnabled = false
 
             viewpager.registerOnPageChangeCallback(object :
                 ViewPager2.OnPageChangeCallback() {
@@ -42,7 +48,7 @@ class MainActivity : AppCompatActivity() {
     inner class MyViewHolder(val binding: FragmentQuizBinding) :
         RecyclerView.ViewHolder(binding.root)
 
-    inner class MyAdapter : RecyclerView.Adapter<MyViewHolder>() {
+    inner class MyAdapter(private val viewPager: ViewPager2) : RecyclerView.Adapter<MyViewHolder>() {
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
             MyViewHolder(FragmentQuizBinding.inflate(layoutInflater, parent, false))
@@ -57,6 +63,8 @@ class MainActivity : AppCompatActivity() {
             holder.binding.optionThree.text = questions[position][3]
             holder.binding.optionFour.text = questions[position][4]
             holder.binding.optionFive.text = questions[position][5]
+//            holder.binding.context?.setTheme(questions[position][6])
+//            holder.binding.context?.theme?.applyStyle(questions[position][6], true)
 
 
             if (position == 0) {
@@ -65,15 +73,34 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (position == questions.size - 1) holder.binding.nextButton.text = "Submit"
-            
+
             holder.binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
                 holder.binding.nextButton.isEnabled = true
             }
 
             holder.binding.nextButton.setOnClickListener {
-                answers[position] = holder.binding.radioGroup.checkedRadioButtonId.toString()
+                answers[position] = holder.binding.radioGroup.checkedRadioButtonId
+                if (position == questions.size - 1) {
+                    onGoResultFragment()
+                } else viewPager.currentItem = position + 1
 
+            }
+
+            holder.binding.previousButton.setOnClickListener {
+                viewPager.currentItem = position - 1
+            }
+
+            holder.binding.toolbar.setNavigationOnClickListener {
+                viewPager.currentItem = position - 1
             }
         }
     }
+
+    private fun onGoResultFragment() {
+        val fragment: Fragment = ResultFragment()
+        val transaction = supportFragmentManager.beginTransaction()
+        transaction.replace(R.id.container, fragment).commit()
+
+    }
+
 }
