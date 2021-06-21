@@ -19,7 +19,6 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
         arrayOf("60", "10", "30", "7", "100", "0")
     )
 
-
     private var _binding: FragmentResultBinding? = null
     private val binding get() = _binding!!
 
@@ -27,7 +26,7 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentResultBinding.inflate(inflater, container, false)
         return binding.root
     }

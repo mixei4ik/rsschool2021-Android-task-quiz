@@ -18,16 +18,19 @@ class QuizFragment : Fragment() {
     private val binding get() = _binding!!
 
     val answersQuestion = arrayOf(
-        arrayOf("1", " 2", "4", "7", "9", "@style/Theme.Quiz.First", "3"),
-        arrayOf("5", "12", "10", "6", "20", "@style/Theme.Quiz.Second", "1"),
-        arrayOf("10", "12", "24", "15", "32", "@style/Theme.Quiz.Third", "2"),
-        arrayOf("10", " 20", " 30", "60", " 100", "@style/Theme.Quiz.Fourth", "3"),
-        arrayOf("60", "10", "30", "7", "100", "@style/Theme.Quiz.Fifth", "0")
+        arrayOf("1", " 2", "4", "7", "9", "R.style.Theme_Quiz_First", "3"),
+        arrayOf("5", "12", "10", "6", "20", "R.style.Theme_Quiz_Second", "1"),
+        arrayOf("10", "12", "24", "15", "32", "R.style.Theme_Quiz_Third", "2"),
+        arrayOf("10", " 20", " 30", "60", " 100", "R.style.Theme_Quiz_Fourth", "3"),
+        arrayOf("60", "10", "30", "7", "100", "R.style.Theme_Quiz_Fifth", "0")
     )
     val questions = arrayOf(
-        "Сколько дней в неделе", "Сколько месецев в году",
-        "Сколько часов в сутках", "Сколько секунд в минуте", "Сколько минут в часе"
+        "Сколько дней в неделе?", "Сколько месецев в году?",
+        "Сколько часов в сутках?", "Сколько секунд в минуте?", "Сколько минут в часе?"
     )
+
+    val theme = arrayOf(R.style.Theme_Quiz_First, R.style.Theme_Quiz_Second,
+        R.style.Theme_Quiz_Third, R.style.Theme_Quiz_Fourth, R.style.Theme_Quiz_Fifth)
 
 
     var answers = mutableListOf(-1, -1, -1, -1, -1)
@@ -35,7 +38,7 @@ class QuizFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentQuiz2Binding.inflate(inflater, container, false)
 
         return binding.root
@@ -74,10 +77,7 @@ class QuizFragment : Fragment() {
             holder.binding.optionThree.text = answersQuestion[position][2]
             holder.binding.optionFour.text = answersQuestion[position][3]
             holder.binding.optionFive.text = answersQuestion[position][4]
-
-//            holder.binding.context?.setTheme(questions[position][5])
-//            holder.binding.context?.theme?.applyStyle(questions[position][5], true)
-
+            holder.binding.fragmentQuiz.context?.theme?.applyStyle(theme[position], true)
 
             if (position == 0) {
                 holder.binding.toolbar.navigationIcon = null
