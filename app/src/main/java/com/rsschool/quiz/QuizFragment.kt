@@ -1,6 +1,7 @@
 package com.rsschool.quiz
 
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,11 +19,11 @@ class QuizFragment : Fragment() {
     private val binding get() = _binding!!
 
     val answersQuestion = arrayOf(
-        arrayOf("1", " 2", "4", "7", "9", "R.style.Theme_Quiz_First", "3"),
-        arrayOf("5", "12", "10", "6", "20", "R.style.Theme_Quiz_Second", "1"),
-        arrayOf("10", "12", "24", "15", "32", "R.style.Theme_Quiz_Third", "2"),
-        arrayOf("10", " 20", " 30", "60", " 100", "R.style.Theme_Quiz_Fourth", "3"),
-        arrayOf("60", "10", "30", "7", "100", "R.style.Theme_Quiz_Fifth", "0")
+        arrayOf("один", "два", "четыре", "семь", "девять", "R.style.Theme_Quiz_First", "3"),
+        arrayOf("пять", "двенадцать", "десять", "шесть", "двадцать", "R.style.Theme_Quiz_Second", "1"),
+        arrayOf("десять", "двадцать", "двадцать четыре", "пятнадцать", "тридцать два", "R.style.Theme_Quiz_Third", "2"),
+        arrayOf("десять", " двадцать", "традцать", "шестьдесят", " сто", "R.style.Theme_Quiz_Fourth", "3"),
+        arrayOf("шестьдесят", "десять", "тридцать", "семь", "сто", "R.style.Theme_Quiz_Fifth", "0")
     )
     val questions = arrayOf(
         "Сколько дней в неделе?", "Сколько месецев в году?",
@@ -30,7 +31,7 @@ class QuizFragment : Fragment() {
     )
 
     val theme = arrayOf(R.style.Theme_Quiz_First, R.style.Theme_Quiz_Second,
-        R.style.Theme_Quiz_Third, R.style.Theme_Quiz_Fourth, R.style.Theme_Quiz_Fifth)
+        R.style.Theme_Quiz_Third, R.style.Theme_Quiz_Fourth, R.style.Theme_Quiz_Fifth, R.style.Theme_Quiz_First, R.style.Theme_Quiz_Second)
 
 
     var answers = mutableListOf(-1, -1, -1, -1, -1)
@@ -39,9 +40,18 @@ class QuizFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentQuiz2Binding.inflate(inflater, container, false)
 
+        setThemeAndStatusBar()
+        _binding = FragmentQuiz2Binding.inflate(inflater, container, false)
         return binding.root
+    }
+
+
+    private fun setThemeAndStatusBar() {
+        activity?.theme?.applyStyle(theme[0], true)
+        val typedValue = TypedValue()
+        context?.theme?.resolveAttribute(android.R.attr.statusBarColor, typedValue, true)
+        activity?.window?.statusBarColor = typedValue.data
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -69,7 +79,12 @@ class QuizFragment : Fragment() {
 
         override fun getItemCount() = questions.size
 
-        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+
+
+        private fun onSetView(holder: MyViewHolder, position: Int) {
+
+            holder.binding.fragmentQuiz.context?.theme?.applyStyle(theme[position + 1], true)
+//            holder.binding.radioGroup.context?.theme?.applyStyle(theme[position], true)
             holder.binding.toolbar.title = "Вопрос ${position + 1}"
             holder.binding.question.text = questions[position]
             holder.binding.optionOne.text = answersQuestion[position][0]
@@ -77,7 +92,6 @@ class QuizFragment : Fragment() {
             holder.binding.optionThree.text = answersQuestion[position][2]
             holder.binding.optionFour.text = answersQuestion[position][3]
             holder.binding.optionFive.text = answersQuestion[position][4]
-            holder.binding.fragmentQuiz.context?.theme?.applyStyle(theme[position], true)
 
             if (position == 0) {
                 holder.binding.toolbar.navigationIcon = null
@@ -85,25 +99,21 @@ class QuizFragment : Fragment() {
             }
 
             if (position == questions.size - 1) holder.binding.nextButton.text = "Submit"
+        }
+
+
+
+        override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+            onSetView(holder, position)
 
             holder.binding.radioGroup.setOnCheckedChangeListener { group, checkedId ->
                 holder.binding.nextButton.isEnabled = true
                 when (checkedId) {
-                    holder.binding.optionOne.id -> {
-                        answers[position] = 0
-                    }
-                    holder.binding.optionTwo.id -> {
-                        answers[position] = 1
-                    }
-                    holder.binding.optionThree.id -> {
-                        answers[position] = 2
-                    }
-                    holder.binding.optionFour.id -> {
-                        answers[position] = 3
-                    }
-                    holder.binding.optionFive.id -> {
-                        answers[position] = 4
-                    }
+                    holder.binding.optionOne.id -> { answers[position] = 0 }
+                    holder.binding.optionTwo.id -> { answers[position] = 1 }
+                    holder.binding.optionThree.id -> { answers[position] = 2 }
+                    holder.binding.optionFour.id -> { answers[position] = 3 }
+                    holder.binding.optionFive.id -> { answers[position] = 4 }
                 }
             }
 

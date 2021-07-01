@@ -12,11 +12,11 @@ import com.rsschool.quiz.databinding.FragmentResultBinding
 class ResultFragment : Fragment(R.layout.fragment_result) {
 
     private val answersQuestion = arrayOf(
-        arrayOf("1", " 2", "4", "7", "9", "3"),
-        arrayOf("5", "12", "10", "6", "20", "1"),
-        arrayOf("10", "12", "24", "15", "32", "2"),
-        arrayOf("10", " 20", " 30", "60", " 100", "3"),
-        arrayOf("60", "10", "30", "7", "100", "0")
+        arrayOf("один", "два", "четыре", "семь", "девять", "3"),
+        arrayOf("пять", "двенадцать", "десять", "шесть", "двадцать", "1"),
+        arrayOf("десять", "двадцать", "двадцать четыре", "пятнадцать", "тридцать два", "2"),
+        arrayOf("десять", " двадцать", "традцать", "шестьдесят", " сто", "3"),
+        arrayOf("шестьдесят", "десять", "тридцать", "семь", "сто", "0")
     )
 
     private var _binding: FragmentResultBinding? = null
@@ -44,7 +44,7 @@ class ResultFragment : Fragment(R.layout.fragment_result) {
         val result = sumResult(answers) * 100 / 5
 
         binding.result.text = "Ваш результат $result %"
-        binding.exit.setOnClickListener { activity?.finish() }
+        binding.exit.setOnClickListener { activity?.finishAffinity() }
         binding.reset.setOnClickListener { onStartQuizFragment() }
 
         binding.send.setOnClickListener {
