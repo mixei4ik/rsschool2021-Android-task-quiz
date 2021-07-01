@@ -22,7 +22,7 @@ class QuizFragment : Fragment() {
         arrayOf("один", "два", "четыре", "семь", "девять", "R.style.Theme_Quiz_First", "3"),
         arrayOf("пять", "двенадцать", "десять", "шесть", "двадцать", "R.style.Theme_Quiz_Second", "1"),
         arrayOf("десять", "двадцать", "двадцать четыре", "пятнадцать", "тридцать два", "R.style.Theme_Quiz_Third", "2"),
-        arrayOf("десять", " двадцать", "традцать", "шестьдесят", " сто", "R.style.Theme_Quiz_Fourth", "3"),
+        arrayOf("десять", " двадцать", "тридцать", "шестьдесят", " сто", "R.style.Theme_Quiz_Fourth", "3"),
         arrayOf("шестьдесят", "десять", "тридцать", "семь", "сто", "R.style.Theme_Quiz_Fifth", "0")
     )
     val questions = arrayOf(
